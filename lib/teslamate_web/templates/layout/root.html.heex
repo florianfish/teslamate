@@ -6,6 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <%= live_title_tag(assigns[:page_title] || "Home", suffix: " · TeslaMate") %>
     <link phx-track-static rel="stylesheet" href={Routes.static_path(@conn, "/assets/app.css")} />
+
+    <script src="https://getbootstrap.com/docs/5.3/assets/js/color-modes.js"></script>
+    <link href="https://getbootstrap.com/docs/5.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+
     <link
       rel="apple-touch-icon"
       sizes="180x180"
@@ -50,59 +55,46 @@
     </script>
   </head>
   <body tabIndex="0">
-    <nav class="navbar is-dark" role="navigation" aria-label="main navigation">
-      <div class="container">
-        <div class="navbar-brand">
-          <a class="navbar-item" href={Routes.static_path(@conn, "/")}>
-            <%= img_tag(Routes.static_path(@conn, "/images/logo.svg"),
-              alt: "TeslaMate",
-              width: "90px"
-            ) %>
-          </a>
+    <main>
+        <div class="container">
+          <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
+            <a href={Routes.static_path(@conn, "/")} class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
+              <%= img_tag(Routes.static_path(@conn, "/images/logo.svg"),
+                alt: "TeslaMate",
+                width: "90px"
+              ) %>
+            </a>
 
-          <a
-            role="button"
-            class="navbar-burger burger"
-            aria-label="menu"
-            aria-expanded="false"
-            data-target="navbar"
-          >
-            <span aria-hidden="true"></span>
-            <span aria-hidden="true"></span>
-            <span aria-hidden="true"></span>
-          </a>
-        </div>
+            <ul class="nav nav-pills">
+              <%= if grafana_url = @conn.assigns.settings.grafana_url do %>
+                  <div class="navbar-item has-dropdown is-hoverable">
+                    <a class="navbar-link is-arrowless">
+                      <span class="icon"><i class="mdi mdi-view-dashboard"></i></span>&nbsp;<span><%= gettext "Dashboards" %></span>
+                    </a>
+                    <div class="navbar-dropdown">
+                      <%= for %{"title" => title, "uid" => uid} <- list_dashboards() do %>
+                        <%= link(title,
+                          to: "#{grafana_url}/d/#{uid}",
+                          class: "navbar-item",
+                          data_uid: uid,
+                          target: "_blank"
+                        ) %>
+                      <% end %>
+                    </div>
+                  </div>
+              <% end %>
 
-        <div id="navbar" class="navbar-menu">
-          <div class="navbar-end">
-            <%= if grafana_url = @conn.assigns.settings.grafana_url do %>
-              <div class="navbar-item has-dropdown is-hoverable">
-                <a class="navbar-link is-arrowless">
-                  <span class="icon"><i class="mdi mdi-view-dashboard"></i></span>&nbsp;<span><%= gettext "Dashboards" %></span>
-                </a>
-                <div class="navbar-dropdown">
-                  <%= for %{"title" => title, "uid" => uid} <- list_dashboards() do %>
-                    <%= link(title,
-                      to: "#{grafana_url}/d/#{uid}",
-                      class: "navbar-item",
-                      data_uid: uid,
-                      target: "_blank"
-                    ) %>
-                  <% end %>
-                </div>
-              </div>
-            <% end %>
-            <%= live_redirect [to: Routes.live_path(@conn, TeslaMateWeb.GeoFenceLive.Index), class: "navbar-item  mr-5"] do %>
-              <span class="icon"><i class="mdi mdi-map-marker-radius"></i></span>&nbsp;<span><%= gettext("Geo-Fences") %></span>
-            <% end %>
-            <%= live_redirect [to: Routes.live_path(@conn, TeslaMateWeb.SettingsLive.Index), class: "navbar-item  mr-5"] do %>
-              <span class="icon"><i class="mdi mdi-cog"></i></span>&nbsp;<span><%= gettext("Settings") %></span>
-            <% end %>
-          </div>
-        </div>
+              <%= live_redirect [to: Routes.live_path(@conn, TeslaMateWeb.GeoFenceLive.Index), class: "nav-link"] do %>
+                <span class="icon"><i class="mdi mdi-map-marker-radius"></i></span>&nbsp;<span><%= gettext("Geo-Fences") %></span>
+              <% end %>
+
+              <%= live_redirect [to: Routes.live_path(@conn, TeslaMateWeb.SettingsLive.Index), class: "nav-link"] do %>
+                <span class="icon"><i class="mdi mdi-cog"></i></span>&nbsp;<span><%= gettext("Settings") %></span>
+              <% end %>
+            </ul>
+          </header>
       </div>
-    </nav>
-
+    </main>
     <% update = TeslaMate.Updater.get_update() %>
 
     <main

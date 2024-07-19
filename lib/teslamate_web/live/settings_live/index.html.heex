@@ -341,46 +341,6 @@
   </div>
 </.form>
 
-<div class="columns is-mobile is-centered">
-  <div class="column is-narrow table-container">
-    <table class="about table is-narrow">
-      <tbody>
-        <tr>
-          <th align="right"><%= gettext("Version") %></th>
-          <td>
-            <%= Application.spec(:teslamate, :vsn) %><strong><%= if @update do
-                  vsn = link @update, to: "https://github.com/teslamate-org/teslamate/releases",
-                                      target: "_blank", rel: "noopener noreferrer"
-
-                  [" (", gettext("Update available"), ": ", vsn, ")"]
-                end %></strong>
-          </td>
-        </tr>
-        <tr>
-          <th align="right"><%= gettext("GitHub") %></th>
-          <td>
-            <%= link("teslamate-org/teslamate",
-              to: "https://github.com/teslamate-org/teslamate",
-              target: "_blank",
-              rel: "noopener noreferrer"
-            ) %>
-          </td>
-        </tr>
-        <tr>
-          <th align="right"><%= gettext("Documentation") %></th>
-          <td>
-            <%= link("docs.teslamate.org",
-              to: "https://docs.teslamate.org",
-              target: "_blank",
-              rel: "noopener noreferrer"
-            ) %>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-</div>
-
 <%= if TeslaMate.Api.signed_in?() and not TeslaMate.Import.enabled?() do %>
   <div class="columns is-mobile is-centered">
     <div class="column is-narrow table-container">
@@ -390,3 +350,42 @@
     </div>
   </div>
 <% end %>
+
+<div class="container">
+  <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
+    <p class="col-md-4 mb-0 text-body-secondary">Teslamate with ❤️</p>
+
+    <a href="/" class="col-md-4 d-flex align-items-center justify-content-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
+      <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"></use></svg>
+    </a>
+
+    <ul class="nav col-md-4 justify-content-end">
+      <li class="nav-item">
+        <span class="nav-link px-2 text-body-secondary">
+          <%= gettext("Version") %> <%= Application.spec(:teslamate, :vsn) %><strong><%= if @update do
+            vsn = link @update, to: "https://github.com/teslamate-org/teslamate/releases",
+                                target: "_blank", rel: "noopener noreferrer"
+
+            [" (", gettext("Update available"), ": ", vsn, ")"]
+          end %></strong>
+        </span>
+      </li>
+      <li class="nav-item">
+        <%= link(gettext("GitHub"),
+              to: "https://github.com/teslamate-org/teslamate",
+              target: "_blank",
+              rel: "noopener noreferrer",
+              class: "nav-link px-2 text-body-secondary"
+            ) %>
+      </li>
+      <li class="nav-item">
+        <%= link(gettext("Documentation"),
+              to: "https://docs.teslamate.org",
+              target: "_blank",
+              rel: "noopener noreferrer",
+              class: "nav-link px-2 text-body-secondary"
+            ) %>
+      </li>
+    </ul>
+  </footer>
+</div>
